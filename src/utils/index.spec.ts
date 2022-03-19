@@ -1,5 +1,12 @@
-import { ORDER } from "../secp256k1-math";
-import { hash160, bufferToBigInt, bufferToBinaryString } from ".";
+import { GENERATOR_POINT, ORDER } from "../secp256k1-math";
+import {
+  hash160,
+  bufferToBigInt,
+  bufferToBinaryString,
+  extractX,
+  extractY,
+  modulo,
+} from ".";
 
 describe("Crypto Utils", () => {
   it("should retrieve the correct hash for a given public key", () => {
@@ -27,5 +34,25 @@ describe("Crypto Utils", () => {
     expect(bufferToBinaryString(buffer)).toBe(
       "1111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111010111010101011101101110011100110101011110100100010100000001110111011111111010010010111101000110011010000001101100100000101000001"
     );
+  });
+
+  it("should extract the X coordinate from the given point", () => {
+    expect(extractX(GENERATOR_POINT)).toBe(
+      BigInt(
+        "0x79be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798"
+      )
+    );
+  });
+
+  it("should extract the Y coordinate from the given point", () => {
+    expect(extractY(GENERATOR_POINT)).toBe(
+      BigInt(
+        "0x483ada7726a3c4655da4fbfc0e1108a8fd17b448a68554199c47d08ffb10d4b8"
+      )
+    );
+  });
+
+  it("should return the correct (positive) modulo for a negative number", () => {
+    expect(modulo(-13n, 64n)).toBe(51n);
   });
 });

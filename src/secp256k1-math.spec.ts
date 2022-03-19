@@ -12,7 +12,7 @@ import {
   verify,
   GENERATOR_POINT,
 } from "./secp256k1-math";
-import { generateRandomNumberWithinBounds } from "./keys";
+import { generatePrivateKey } from "./keys";
 
 /**
  *  We're using the tiny-secp256k1 library to test against our expectations
@@ -226,13 +226,11 @@ describe("Secp256k1 Mathematics", () => {
   });
 
   it("should return the product of a compressed point and a Buffer representing the number 5 as a compressed point", () => {
-    const pointProductActual = pointMultiply(
-      pointOneCompressed,
-      Buffer.from("101", "binary"),
-      {
-        compressed: true,
-      }
-    );
+    const fiveAsBuffer = Buffer.allocUnsafe(1);
+    fiveAsBuffer.writeUInt8(5);
+    const pointProductActual = pointMultiply(pointOneCompressed, fiveAsBuffer, {
+      compressed: true,
+    });
     const pointProductExpected = pointMultiplyWithScalarTinySecp256k1(
       pointOneCompressed,
       5,

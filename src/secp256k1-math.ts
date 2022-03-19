@@ -1,15 +1,7 @@
 import { modInv, modPow } from "bigint-mod-arith";
-import { bufferToBigInt } from "./utils";
-import { generateRandomNumberWithinBounds } from "./keys";
+import { bufferToBigInt, extractX, extractY, modulo } from "./utils";
 import type { Bit } from "./types";
 
-/**
- * A lot of the math and numbers here come from https://learnmeabitcoin.com/technical/ecdsa & https://learnmeabitcoin.com/technical/public-key
- * These functions exist in other libraries (e.g. tiny-secp256k1),
- * but are mostly reproduced in order for the author to get a better grasp on the math behind Bitcoin.
- * As we use "bigint-mod-arith" and as noted in its README, the math used here is not constant time
- * and should thus not be used with private keys.
- **/
 export const ORDER =
   115792089237316195423570985008687907852837564279074904382605163141518161494337n;
 
@@ -31,9 +23,6 @@ export const GENERATOR_POINT = Buffer.from(
 const bitLengthCompressedPoint = 264;
 const bitLengthUncompressedPoint = 520;
 
-const extractX = (point: Buffer) => bufferToBigInt(point, 1, 1 + 256 / 8);
-const extractY = (point: Buffer) => bufferToBigInt(point, 1 + 256 / 8);
-
 const extractCoordinates = (point: Buffer) => {
   return {
     x: extractX(point),
@@ -44,13 +33,8 @@ const extractCoordinates = (point: Buffer) => {
 const bigIntTo32ByteHex = (number: bigint) =>
   number.toString(16).padStart(64, "0");
 
-/**
- * This accounts for modulo of negative numbers, see below:
- * https://stackoverflow.com/questions/4467539/javascript-modulo-gives-a-negative-result-for-negative-numbers#answer-17323608
- **/
-const modulo = (number: bigint, modulus = PRIME_MODULUS) => {
-  return ((number % modulus) + modulus) % modulus;
-};
+const isEven = (number: bigint) => modulo(number, 2n) === 0n;
+const isOdd = (number: bigint) => modulo(number, 2n) === 1n;
 
 const pointIsCompressed = (point: Buffer) => {
   const prefix = point.slice(0, 1).toString("hex");
@@ -92,10 +76,10 @@ const uncompressPoint = (point: Buffer) => {
   const x = extractX(point);
   const ySquared = modulo(x ** 3n + 7n);
   let y = modPow(ySquared, (PRIME_MODULUS + 1n) / 4n, PRIME_MODULUS);
-  if (prefix === "02" && modulo(y, 2n) !== 0n) {
+  if (prefix === "02" && isOdd(y)) {
     y = modulo(PRIME_MODULUS - y);
   }
-  if (prefix === "03" && modulo(y, 2n) === 0n) {
+  if (prefix === "03" && isEven(y)) {
     y = modulo(PRIME_MODULUS - y);
   }
   return Buffer.concat([
@@ -108,8 +92,7 @@ const uncompressPoint = (point: Buffer) => {
 const pointAsBuffer = (pointX: bigint, pointY: bigint, compressed: boolean) => {
   const pointXHex = bigIntTo32ByteHex(pointX);
   if (compressed) {
-    const pointYEven = modulo(pointY, 2n) === 0n;
-    const prefix = pointYEven ? "02" : "03";
+    const prefix = isEven(pointY) ? "02" : "03";
     return Buffer.from(`${prefix}${pointXHex}`, "hex");
   }
   const prefix = "04";
@@ -134,7 +117,7 @@ export const pointAdd = (
   pointTwo: Buffer,
   { compressed } = { compressed: false }
 ) => {
-  if (Buffer.from(pointOne).equals(Buffer.from(pointTwo))) {
+  if (pointOne.equals(pointTwo)) {
     return pointDouble(pointOne, { compressed });
   }
   const pointOneUncompressed = uncompressPoint(pointOne);
@@ -158,7 +141,7 @@ export const pointMultiply = (
 ) => {
   let multiplierAsBinaryString: string;
   if (multiplier instanceof Buffer) {
-    multiplierAsBinaryString = multiplier.toString("binary");
+    multiplierAsBinaryString = bufferToBigInt(multiplier).toString(2);
   } else {
     // For scalar === 149 => '10010101'
     multiplierAsBinaryString = multiplier.toString(2);
@@ -170,7 +153,6 @@ export const pointMultiply = (
     const isLastBit = index === bitArray.length - 1;
     // Can use uncompressed points for small perf boost in intermediate calculations
     const compressPoint = isLastBit ? { compressed } : { compressed: false };
-
     const pointDoubled = pointDouble(accPoint, compressPoint);
     if (bit === "1") {
       return pointAdd(pointDoubled, point, compressPoint);
