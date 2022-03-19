@@ -10,3 +10,6 @@ export const bufferToBigInt = (
   start = 0,
   end = buffer.length
 ) => BigInt(`0x${buffer.slice(start, end).toString("hex")}`);
+
+export const bufferToBinaryString = (buffer: Buffer) =>
+  bufferToBigInt(buffer).toString(2);
