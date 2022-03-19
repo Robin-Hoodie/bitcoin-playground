@@ -1,4 +1,4 @@
-import { decodeRawTransactionLegacy } from "./transaction";
+import { decodeRawTransactionLegacy } from "./transaction-decode";
 
 describe("Transaction", () => {
   it("decodes the raw legacy transaction correctly", () => {

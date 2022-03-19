@@ -1,8 +1,5 @@
-import {
-  InputWithIndexEnd,
-  OutputWithIndexEnd,
-  Transaction,
-} from "./types";
+import { InputWithIndexEnd, OutputWithIndexEnd, Transaction } from "../types";
+import { decodeP2PKHLockingScript } from "./locking-script-decode";
 
 const CHARS_PER_BYTE = 2;
 const CHARS_OUTPUT_VALUE = 8 * CHARS_PER_BYTE;
@@ -15,12 +12,8 @@ const CHARS_VERSION = 4 * CHARS_PER_BYTE;
 const SATS_PER_BTC = 100000000;
 
 export const decodeRawTransactionLegacy = (
-  rawTransaction: string | Buffer
+  rawTransaction: string
 ): Transaction => {
-  rawTransaction =
-    typeof rawTransaction === "string"
-      ? rawTransaction
-      : rawTransaction.toString("hex");
   const { version, versionIndexEnd } = decodeVersion(rawTransaction);
   const { inputs, inputsIndexEnd } = decodeInputs(
     rawTransaction,
@@ -129,44 +122,6 @@ const decodeOutputs = (rawTransaction: string, indexStart: number) => {
     outputs,
     outputsIndexEnd,
   };
-};
-
-// See https://www.oreilly.com/library/view/mastering-bitcoin/9781491902639/apa.html for OP codes
-const decodeP2PKHLockingScript = (lockingScriptRaw: string) => {
-  if (lockingScriptRaw.length !== 50) {
-    throw new Error(
-      `Locking script ${lockingScriptRaw} did not contain exactly 25 bytes. Length is ${lockingScriptRaw.length}`
-    );
-  }
-  if (lockingScriptRaw.slice(0, 2) !== "76") {
-    throw new Error(
-      `Locking script ${lockingScriptRaw} did not contain "OP_DUP" as the first byte`
-    );
-  }
-  if (lockingScriptRaw.slice(2, 4) !== "a9") {
-    throw new Error(
-      `Locking script ${lockingScriptRaw} did not contain "OP_HASH160" as the second byte`
-    );
-  }
-  if (lockingScriptRaw.slice(4, 6) !== "14") {
-    throw new Error(
-      `Locking script ${lockingScriptRaw} did not mark the transaction as being 20 bytes in length as the third byte`
-    );
-  }
-  if (lockingScriptRaw.slice(-4, -2) !== "88") {
-    throw new Error(
-      `Locking script ${lockingScriptRaw} did not contain "OP_EQUALVERIFY" as the next to last byte`
-    );
-  }
-  if (lockingScriptRaw.slice(-2) !== "ac") {
-    throw new Error(
-      `Locking script ${lockingScriptRaw} did not contain "OP_CHECKSIG" as the last byte`
-    );
-  }
-  return `OP_DUP OP_HASH160 ${lockingScriptRaw.slice(
-    6,
-    -4
-  )} OP_EQUALVERIFY OP_CHECKSIG`;
 };
 
 const decodeOutput = (rawTransaction: string, indexStart: number) => {
