@@ -1,6 +1,6 @@
 import { bech32 } from "bech32";
 import { encode } from "bs58check";
-import { hash160 } from "./utils";
+import { hash160 } from "@/utils";
 
 export const pubKeyToLegacyAddress = (pubKey: Buffer) => {
   const hash = hash160(pubKey);

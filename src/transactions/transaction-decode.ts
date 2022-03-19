@@ -1,5 +1,5 @@
-import { InputWithIndexEnd, OutputWithIndexEnd, Transaction } from "../types";
-import { decodeP2PKHLockingScript } from "./locking-script-decode";
+import { InputWithIndexEnd, OutputWithIndexEnd, Transaction } from "@/types";
+import { decodeP2PKHLockingScript } from "@/transactions";
 
 const CHARS_PER_BYTE = 2;
 const CHARS_OUTPUT_VALUE = 8 * CHARS_PER_BYTE;

@@ -1,7 +1,7 @@
 import { modInv, modPow } from "bigint-mod-arith";
-import { bufferToBigInt, extractX, extractY, modulo } from "./utils";
-import { PRIME_MODULUS } from "./utils/constants-secp-256k1";
-import type { Bit } from "./types";
+import { bufferToBigInt, extractX, extractY, modulo } from "@/utils";
+import { PRIME_MODULUS } from "@/constants";
+import type { Bit } from "@/types";
 
 const bitLengthCompressedPoint = 264;
 const bitLengthUncompressedPoint = 520;

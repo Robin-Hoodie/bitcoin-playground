@@ -1,5 +1,5 @@
-import { legacyAccountBTC } from "./mocks/accounts";
-import { decodeExtendedKey } from "./extended-key";
+import { legacyAccountBTC } from "@test/mocks/accounts";
+import { decodeExtendedKey } from "@/keys";
 
 const expectHexEqualsActual = (expected: Buffer, actual: string) =>
   expect(expected.toString("hex")).toBe(actual);

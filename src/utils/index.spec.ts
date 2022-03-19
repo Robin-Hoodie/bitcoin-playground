@@ -1,4 +1,4 @@
-import { ORDER, GENERATOR_POINT } from "./constants-secp-256k1";
+import { ORDER, GENERATOR_POINT } from "@/constants";
 import {
   hash160,
   bufferToBigInt,
@@ -6,7 +6,7 @@ import {
   extractX,
   extractY,
   modulo,
-} from ".";
+} from "@/utils";
 
 describe("Crypto Utils", () => {
   it("should retrieve the correct hash for a given public key", () => {

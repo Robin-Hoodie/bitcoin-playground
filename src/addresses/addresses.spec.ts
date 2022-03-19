@@ -1,5 +1,5 @@
-import { pubKeyToSegwitAddress, pubKeyToLegacyAddress } from "./address";
-import { legacyAccountBTC, segWitAccountBTC } from "./mocks/accounts";
+import { pubKeyToSegwitAddress, pubKeyToLegacyAddress } from "@/addresses";
+import { legacyAccountBTC, segWitAccountBTC } from "@test/mocks/accounts";
 
 describe("Addressses", () => {
   describe("pubKeyToLegacyAddress", () => {

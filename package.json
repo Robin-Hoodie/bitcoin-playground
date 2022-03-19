@@ -23,6 +23,7 @@
     "@types/jest": "^27.4.1",
     "@types/node": "^17.0.21",
     "babel-jest": "^27.5.1",
+    "babel-plugin-module-resolver": "^4.1.0",
     "bech32": "^2.0.0",
     "bs58check": "^2.1.2",
     "jest": "^27.5.1",

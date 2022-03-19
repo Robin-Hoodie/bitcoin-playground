@@ -1,5 +1,5 @@
 import { createHash } from "crypto";
-import { PRIME_MODULUS } from "./constants-secp-256k1";
+import { PRIME_MODULUS } from "@/constants";
 
 export const hash160 = (data: Uint8Array) => {
   const innerHash = createHash("sha256").update(data).digest();

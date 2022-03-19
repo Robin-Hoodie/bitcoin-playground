@@ -2,9 +2,9 @@ import {
   pointAdd as pointAddTinySecp256k1,
   pointMultiply as pointMultiplyWithScalarTinySecp256k1,
 } from "tiny-secp256k1";
-import { generatePrivateKey } from "./keys";
-import { pointDouble, pointAdd, pointMultiply } from "./secp256k1-math";
-import { bufferToBigInt } from "./utils";
+import { generatePrivateKey } from "@/keys";
+import { pointDouble, pointAdd, pointMultiply } from "@/math";
+import { bufferToBigInt } from "@/utils";
 
 /**
  *  We're using the tiny-secp256k1 library to test against our expectations

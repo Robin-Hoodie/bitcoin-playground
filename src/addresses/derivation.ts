@@ -1,12 +1,8 @@
 import { createHmac } from "crypto";
-import { pointAdd } from "./secp256k1-math";
-import {
-  decodeExtendedKey,
-  isXPubDecoded,
-  isZPubDecoded,
-} from "./extended-key";
-import { pubKeyToSegwitAddress, pubKeyToLegacyAddress } from "./address";
-import { generatePublicKey, isPrivateKeyValid } from "./keys";
+import { pointAdd } from "@/math";
+import { decodeExtendedKey, isXPubDecoded, isZPubDecoded } from "@/keys";
+import { pubKeyToSegwitAddress, pubKeyToLegacyAddress } from "@/addresses";
+import { generatePublicKey, isPrivateKeyValid } from "@/keys";
 
 const maxIndexNormalChildKeys = 2 ** 31;
 
