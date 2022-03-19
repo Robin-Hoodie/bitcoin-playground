@@ -1,17 +1,12 @@
 import { createHmac } from "crypto";
-import {
-  pointMultiply,
-  pointAdd,
-  GENERATOR_POINT,
-  ORDER,
-} from "./secp256k1-math";
+import { pointAdd } from "./secp256k1-math";
 import {
   decodeExtendedKey,
   isXPubDecoded,
   isZPubDecoded,
 } from "./extended-key";
 import { pubKeyToSegwitAddress, pubKeyToLegacyAddress } from "./address";
-import { bufferToBigInt } from "./utils";
+import { generatePublicKey, isPrivateKeyValid } from "./keys";
 
 const maxIndexNormalChildKeys = 2 ** 31;
 
@@ -19,19 +14,6 @@ const getIndexAsBuffer = (index: number) => {
   const buffer = Buffer.alloc(4);
   buffer.writeUInt32BE(index);
   return buffer;
-};
-
-const isPrivateKeyValid = (privateKey: Buffer) =>
-  bufferToBigInt(privateKey) < ORDER;
-const privateKeyToPoint = (privateKey: Buffer) => {
-  if (!isPrivateKeyValid(privateKey)) {
-    throw new Error(
-      "Private key is greater than the order of the curve. Try the next index"
-    );
-  }
-  // result of multiplication can't be negative, as we checked that the digest is smaller than the order of the curve
-  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-  return pointMultiply(GENERATOR_POINT, privateKey)!;
 };
 
 const generatePubKeyAndChainCode = (
@@ -48,7 +30,11 @@ const generatePubKeyAndChainCode = (
   const digestFirstHalf = digest.slice(0, 32);
   const childChainCode = Buffer.from(digest.slice(32));
 
-  const childPubKey = pointAdd(privateKeyToPoint(digestFirstHalf), pubKey, {
+  if (!isPrivateKeyValid(digestFirstHalf)) {
+    throw new Error("First half of digest is not valid. Try the next index");
+  }
+
+  const childPubKey = pointAdd(generatePublicKey(digestFirstHalf), pubKey, {
     compressed: true,
   });
 
