@@ -10,9 +10,8 @@ import {
   pointMultiply,
   sign,
   verify,
-  GENERATOR_POINT,
 } from "./secp256k1-math";
-import { generatePrivateKey } from "./keys";
+import { GENERATOR_POINT } from "./utils/constants-secp-256k1";
 
 /**
  *  We're using the tiny-secp256k1 library to test against our expectations
@@ -239,16 +238,5 @@ describe("Secp256k1 Mathematics", () => {
     expect(pointProductActual.toString("hex")).toBe(
       Buffer.from(pointProductExpected).toString("hex")
     );
-  });
-
-  it.only("should create a signature and verify it", () => {
-    const privateKey = generateRandomNumberWithinBounds();
-    const publicKey = pointMultiply(GENERATOR_POINT, privateKey);
-    const message = Buffer.from(
-      generateRandomNumberWithinBounds().toString(16),
-      "hex"
-    );
-    const signature = sign(privateKey, message);
-    expect(verify(publicKey, message, signature)).toBe(true);
   });
 });

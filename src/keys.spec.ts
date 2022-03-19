@@ -1,5 +1,5 @@
 import { generatePublicKey, isPrivateKeyValid, generateKeyPair } from "./keys";
-import { ORDER } from "./secp256k1-math";
+import { ORDER } from "./utils/constants-secp-256k1";
 
 describe("Keys", () => {
   // The private/public keypairs below was generated with https://learnmeabitcoin.com/technical/public-key

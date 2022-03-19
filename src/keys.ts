@@ -1,5 +1,6 @@
 import { randomBytes } from "crypto";
-import { GENERATOR_POINT, ORDER, pointMultiply } from "./secp256k1-math";
+import { pointMultiply } from "./secp256k1-math";
+import { ORDER, GENERATOR_POINT } from "./utils/constants-secp-256k1";
 import { bufferToBigInt } from "./utils";
 
 interface OptionsCompression {

@@ -1,4 +1,4 @@
-import { GENERATOR_POINT, ORDER } from "../secp256k1-math";
+import { ORDER, GENERATOR_POINT } from "./constants-secp-256k1";
 import {
   hash160,
   bufferToBigInt,

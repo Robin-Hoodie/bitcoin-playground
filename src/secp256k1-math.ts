@@ -1,24 +1,7 @@
 import { modInv, modPow } from "bigint-mod-arith";
 import { bufferToBigInt, extractX, extractY, modulo } from "./utils";
+import { PRIME_MODULUS } from "./utils/constants-secp-256k1";
 import type { Bit } from "./types";
-
-export const ORDER =
-  115792089237316195423570985008687907852837564279074904382605163141518161494337n;
-
-export const PRIME_MODULUS =
-  2n ** 256n -
-  2n ** 32n -
-  2n ** 9n -
-  2n ** 8n -
-  2n ** 7n -
-  2n ** 6n -
-  2n ** 4n -
-  1n;
-
-export const GENERATOR_POINT = Buffer.from(
-  "0479be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798483ada7726a3c4655da4fbfc0e1108a8fd17b448a68554199c47d08ffb10d4b8",
-  "hex"
-);
 
 const bitLengthCompressedPoint = 264;
 const bitLengthUncompressedPoint = 520;
@@ -159,42 +142,4 @@ export const pointMultiply = (
     }
     return pointDoubled;
   }, point);
-};
-
-interface Signature {
-  r: bigint;
-  s: bigint;
-}
-
-export const sign = (privateKey: bigint, hashOfMessage: Buffer): Signature => {
-  const randomNumber = generateRandomNumberWithinBounds();
-  const randomPoint = pointMultiply(GENERATOR_POINT, randomNumber);
-  const randomPointX = extractX(randomPoint);
-  const r = modulo(randomPointX, ORDER);
-  const s = modulo(
-    modInv(randomNumber, ORDER) *
-      (bufferToBigInt(hashOfMessage) + privateKey * randomNumber),
-    ORDER
-  );
-  return {
-    r,
-    s,
-  };
-};
-
-export const verify = (
-  publicKey: Buffer,
-  hashOfMessage: Buffer,
-  { r, s }: Signature
-) => {
-  const sModInverse = modInv(s, ORDER);
-  const pointOne = pointMultiply(
-    GENERATOR_POINT,
-    sModInverse * bufferToBigInt(hashOfMessage)
-  );
-  const pointTwo = pointMultiply(publicKey, sModInverse * r);
-  const pointResult = pointAdd(pointOne, pointTwo);
-  console.log("Resulting point X:", extractX(pointResult));
-  console.log("Signature R      :", r);
-  return extractX(pointResult) === r;
 };
