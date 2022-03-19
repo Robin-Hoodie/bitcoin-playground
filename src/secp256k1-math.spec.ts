@@ -1,17 +1,10 @@
 import {
   pointAdd as pointAddTinySecp256k1,
-  pointFromScalar,
-  sign as signTinySecp256k1,
-  verify as verifyTinySecp256k1,
+  pointMultiply as pointMultiplyWithScalarTinySecp256k1,
 } from "tiny-secp256k1";
-import {
-  pointDouble,
-  pointAdd,
-  pointMultiply,
-  sign,
-  verify,
-} from "./secp256k1-math";
-import { GENERATOR_POINT } from "./utils/constants-secp-256k1";
+import { generatePrivateKey } from "./keys";
+import { pointDouble, pointAdd, pointMultiply } from "./secp256k1-math";
+import { bufferToBigInt } from "./utils";
 
 /**
  *  We're using the tiny-secp256k1 library to test against our expectations
@@ -36,20 +29,6 @@ const pointTwoCompressed = Buffer.from(
   "02c6047f9441ed7d6d3045406e95c07cd85c778e4b8cef3ca7abac09b95c709ee5",
   "hex"
 );
-
-const pointMultiplyWithScalarTinySecp256k1 = (
-  point: Buffer,
-  scalar: number,
-  compressed: boolean
-) =>
-  Array(scalar)
-    .fill(null)
-    .filter((_, i) => i !== 0)
-    .reduce(
-      (multipliedPoint) =>
-        pointAddTinySecp256k1(multipliedPoint, point, compressed),
-      point
-    );
 
 describe("Secp256k1 Mathematics", () => {
   it("should return the result of doubling an uncompressed point as an uncompressed point", () => {
@@ -168,13 +147,18 @@ describe("Secp256k1 Mathematics", () => {
     );
   });
 
-  it("should return the product of an uncompressed point and 5 as an uncompressed point", () => {
-    const pointProductActual = pointMultiply(pointOneUncompressed, 5n, {
-      compressed: false,
-    });
+  it("should return the product of an uncompressed point and a random number as an uncompressed point", () => {
+    const randomNumber = generatePrivateKey();
+    const pointProductActual = pointMultiply(
+      pointOneUncompressed,
+      bufferToBigInt(randomNumber),
+      {
+        compressed: false,
+      }
+    );
     const pointProductExpected = pointMultiplyWithScalarTinySecp256k1(
       pointOneUncompressed,
-      5,
+      randomNumber,
       false
     )!;
     expect(pointProductActual.toString("hex")).toBe(
@@ -182,13 +166,18 @@ describe("Secp256k1 Mathematics", () => {
     );
   });
 
-  it("should return the product of a compressed point and 5 as an uncompressed point", () => {
-    const pointProductActual = pointMultiply(pointOneCompressed, 5n, {
-      compressed: false,
-    });
+  it("should return the product of a compressed point and a random number as an uncompressed point", () => {
+    const randomNumber = generatePrivateKey();
+    const pointProductActual = pointMultiply(
+      pointOneCompressed,
+      bufferToBigInt(randomNumber),
+      {
+        compressed: false,
+      }
+    );
     const pointProductExpected = pointMultiplyWithScalarTinySecp256k1(
       pointOneCompressed,
-      5,
+      randomNumber,
       false
     )!;
     expect(pointProductActual.toString("hex")).toBe(
@@ -196,13 +185,18 @@ describe("Secp256k1 Mathematics", () => {
     );
   });
 
-  it("should return the product of an uncompressed point and 5 as a compressed point", () => {
-    const pointProductActual = pointMultiply(pointOneUncompressed, 5n, {
-      compressed: true,
-    });
+  it("should return the product of an uncompressed point and a random number as a compressed point", () => {
+    const randomNumber = generatePrivateKey();
+    const pointProductActual = pointMultiply(
+      pointOneUncompressed,
+      bufferToBigInt(randomNumber),
+      {
+        compressed: true,
+      }
+    );
     const pointProductExpected = pointMultiplyWithScalarTinySecp256k1(
       pointOneUncompressed,
-      5,
+      randomNumber,
       true
     )!;
     expect(pointProductActual.toString("hex")).toBe(
@@ -210,13 +204,18 @@ describe("Secp256k1 Mathematics", () => {
     );
   });
 
-  it("should return the product of a compressed point and 5 as a compressed point", () => {
-    const pointProductActual = pointMultiply(pointOneCompressed, 5n, {
-      compressed: true,
-    });
+  it("should return the product of a compressed point and a random number as a compressed point", () => {
+    const randomNumber = generatePrivateKey();
+    const pointProductActual = pointMultiply(
+      pointOneCompressed,
+      bufferToBigInt(randomNumber),
+      {
+        compressed: true,
+      }
+    );
     const pointProductExpected = pointMultiplyWithScalarTinySecp256k1(
       pointOneCompressed,
-      5,
+      randomNumber,
       true
     )!;
     expect(pointProductActual.toString("hex")).toBe(
@@ -224,15 +223,14 @@ describe("Secp256k1 Mathematics", () => {
     );
   });
 
-  it("should return the product of a compressed point and a Buffer representing the number 5 as a compressed point", () => {
-    const fiveAsBuffer = Buffer.allocUnsafe(1);
-    fiveAsBuffer.writeUInt8(5);
-    const pointProductActual = pointMultiply(pointOneCompressed, fiveAsBuffer, {
+  it("should return the product of a compressed point and a random number as a Buffer as a compressed point", () => {
+    const randomNumber = generatePrivateKey();
+    const pointProductActual = pointMultiply(pointOneCompressed, randomNumber, {
       compressed: true,
     });
     const pointProductExpected = pointMultiplyWithScalarTinySecp256k1(
       pointOneCompressed,
-      5,
+      randomNumber,
       true
     )!;
     expect(pointProductActual.toString("hex")).toBe(
