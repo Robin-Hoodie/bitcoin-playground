@@ -1,5 +1,5 @@
 import { InputWithIndexEnd, OutputWithIndexEnd, Transaction } from "@/types";
-import { decodeP2PKHLockingScript } from "@/transactions";
+import { decodeLockingScriptP2PKH } from "@/transactions";
 
 const CHARS_PER_BYTE = 2;
 const CHARS_OUTPUT_VALUE = 8 * CHARS_PER_BYTE;
@@ -148,7 +148,7 @@ const decodeOutput = (rawTransaction: string, indexStart: number) => {
     lockingScriptIndexStart,
     lockingScriptIndexEnd
   );
-  const lockingScriptDecoded = decodeP2PKHLockingScript(lockingScriptRaw);
+  const lockingScriptDecoded = decodeLockingScriptP2PKH(lockingScriptRaw);
   return {
     output: {
       value: valueInBtc,

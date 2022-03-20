@@ -1,10 +1,7 @@
 import { modInv } from "bigint-mod-arith";
 import { bufferToBigInt, modulo, extractX } from "@/utils";
 import { generatePrivateKey } from "@/keys";
-import {
-  pointMultiply,
-  pointAdd,
-} from "@/math";
+import { pointMultiply, pointAdd } from "@/math";
 import { ORDER, GENERATOR_POINT } from "@/constants";
 
 interface Signature {
@@ -19,8 +16,8 @@ export const sign = (privateKey: Buffer, hashOfMessage: Buffer): Signature => {
   const privateKeyAsNumber = bufferToBigInt(privateKey);
   const r = modulo(randomPointX, ORDER);
   const s = modulo(
-    modInv(randomNumber, ORDER) *
-      (bufferToBigInt(hashOfMessage) + privateKeyAsNumber * randomNumber),
+    (privateKeyAsNumber * randomNumber + bufferToBigInt(hashOfMessage)) *
+      modInv(randomNumber, ORDER),
     ORDER
   );
   return {
@@ -37,11 +34,9 @@ export const verify = (
   const sModInverse = modInv(s, ORDER);
   const pointOne = pointMultiply(
     GENERATOR_POINT,
-    sModInverse * bufferToBigInt(hashOfMessage)
+    bufferToBigInt(hashOfMessage) * sModInverse
   );
-  const pointTwo = pointMultiply(publicKey, sModInverse * r);
+  const pointTwo = pointMultiply(publicKey, r * sModInverse);
   const pointResult = pointAdd(pointOne, pointTwo);
-  console.log("Resulting point X:", extractX(pointResult));
-  console.log("Signature R      :", r);
   return extractX(pointResult) === r;
 };

@@ -6,7 +6,7 @@ const HEX_TO_OPCODE: Record<string, string> = {
 };
 
 // See https://www.oreilly.com/library/view/mastering-bitcoin/9781491902639/apa.html for OP codes
-export const decodeP2PKHLockingScript = (lockingScriptRaw: string) => {
+export const decodeLockingScriptP2PKH = (lockingScriptRaw: string) => {
   if (lockingScriptRaw.length !== 50) {
     throw new Error(
       `Locking script ${lockingScriptRaw} did not contain exactly 25 bytes. Length is ${lockingScriptRaw.length}`

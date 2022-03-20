@@ -65,11 +65,7 @@ const uncompressPoint = (point: Buffer) => {
   if (prefix === "03" && isEven(y)) {
     y = modulo(PRIME_MODULUS - y);
   }
-  return Buffer.concat([
-    Buffer.from("04", "hex"),
-    Buffer.from(bigIntTo32ByteHex(x), "hex"),
-    Buffer.from(bigIntTo32ByteHex(y), "hex"),
-  ]);
+  return Buffer.from(`04${bigIntTo32ByteHex(x)}${bigIntTo32ByteHex(y)}`, "hex");
 };
 
 const pointAsBuffer = (pointX: bigint, pointY: bigint, compressed: boolean) => {
