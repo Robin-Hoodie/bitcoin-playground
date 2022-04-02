@@ -1,6 +1,6 @@
 import { randomBytes } from "crypto";
 import { pointMultiply } from "@/math";
-import { ORDER, GENERATOR_POINT } from "@/constants";
+import { ORDER, GENERATOR_POINT } from "@/constants/constants";
 import { bufferToBigInt } from "@/utils";
 
 interface OptionsCompression {

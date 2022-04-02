@@ -1,2 +1,1 @@
-export * from "@/transactions/transaction-decode";
-export * from "@/transactions/locking-script-decode";
+export * from "@/transactions/transaction";

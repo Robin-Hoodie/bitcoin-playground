@@ -1,5 +1,6 @@
-import { InputWithIndexEnd, OutputWithIndexEnd, Transaction } from "@/types";
-import { decodeLockingScriptP2PKH } from "@/transactions";
+import { InputWithIndexEnd, OutputWithIndexEnd } from "@/types";
+import { decodeLockingScriptP2PKH } from "./decode-locking-script";
+import type { Transaction } from "@/transactions";
 
 const CHARS_PER_BYTE = 2;
 const CHARS_OUTPUT_VALUE = 8 * CHARS_PER_BYTE;
@@ -11,9 +12,7 @@ const CHARS_INPUT_SEQUENCE = 4 * CHARS_PER_BYTE;
 const CHARS_VERSION = 4 * CHARS_PER_BYTE;
 const SATS_PER_BTC = 100000000;
 
-export const decodeRawTransactionLegacy = (
-  rawTransaction: string
-): Transaction => {
+export const decodeRawTransaction = (rawTransaction: string): Transaction => {
   const { version, versionIndexEnd } = decodeVersion(rawTransaction);
   const { inputs, inputsIndexEnd } = decodeInputs(
     rawTransaction,
@@ -35,7 +34,7 @@ export const decodeRawTransactionLegacy = (
 const decodeVersion = (rawTransaction: string) => {
   const version = convertToLE(rawTransaction.slice(0, CHARS_VERSION));
   return {
-    version: parseInt(version, 16),
+    version,
     versionIndexEnd: CHARS_VERSION,
   };
 };

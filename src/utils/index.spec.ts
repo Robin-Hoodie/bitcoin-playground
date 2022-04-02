@@ -1,4 +1,4 @@
-import { ORDER, GENERATOR_POINT } from "@/constants";
+import { ORDER, GENERATOR_POINT } from "@/constants/constants";
 import {
   hash160,
   bufferToBigInt,

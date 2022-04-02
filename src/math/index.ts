@@ -1,6 +1,6 @@
 import { modInv, modPow } from "bigint-mod-arith";
 import { bufferToBigInt, extractX, extractY, modulo } from "@/utils";
-import { PRIME_MODULUS } from "@/constants";
+import { PRIME_MODULUS } from "@/constants/constants";
 import type { Bit } from "@/types";
 
 const bitLengthCompressedPoint = 264;

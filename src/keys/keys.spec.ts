@@ -1,5 +1,5 @@
 import { generatePublicKey, isPrivateKeyValid, generateKeyPair } from "@/keys";
-import { ORDER } from "@/constants";
+import { ORDER } from "@/constants/constants";
 
 describe("Keys", () => {
   // The private/public keypairs below was generated with https://learnmeabitcoin.com/technical/public-key
