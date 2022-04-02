@@ -11,16 +11,6 @@ export interface Output {
   scriptPubKey: string;
 }
 
-export interface InputWithIndexEnd {
-  input: Input;
-  indexEnd: number;
-}
-
-export interface OutputWithIndexEnd {
-  output: Output;
-  indexEnd: number;
-}
-
 export interface Transaction {
   version: string;
   inputs: Input[];
