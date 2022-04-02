@@ -6,6 +6,7 @@ import {
   extractX,
   extractY,
   modulo,
+  convertToLE,
 } from "@/utils";
 
 describe("Crypto Utils", () => {
@@ -55,4 +56,8 @@ describe("Crypto Utils", () => {
   it("should return the correct (positive) modulo for a negative number", () => {
     expect(modulo(-13n, 64n)).toBe(51n);
   });
+
+  it("should convert to a LE number", () => {
+    expect(convertToLE("01d2f46a")).toBe("6af4d201");
+  })
 });

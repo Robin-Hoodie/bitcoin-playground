@@ -25,3 +25,11 @@ export const extractY = (point: Buffer) => bufferToBigInt(point, 1 + 256 / 8);
  **/
 export const modulo = (number: bigint, modulus = PRIME_MODULUS) =>
   ((number % modulus) + modulus) % modulus;
+
+export const convertToLE = (hex: string) => {
+  const hexBytes = hex.match(/[\da-f][\da-f]/g);
+  if (!hexBytes) {
+    throw new Error(`${hex} is not a hex string`);
+  }
+  return hexBytes.reverse().join("");
+};

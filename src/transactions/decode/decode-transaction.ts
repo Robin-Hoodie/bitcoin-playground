@@ -1,6 +1,7 @@
 import { InputWithIndexEnd, OutputWithIndexEnd } from "@/types";
 import { decodeLockingScriptP2PKH } from "./decode-locking-script";
 import type { Transaction } from "@/transactions";
+import { convertToLE } from "@/utils";
 
 const CHARS_PER_BYTE = 2;
 const CHARS_OUTPUT_VALUE = 8 * CHARS_PER_BYTE;
@@ -155,12 +156,4 @@ const decodeOutput = (rawTransaction: string, indexStart: number) => {
     },
     indexEnd: lockingScriptIndexEnd,
   };
-};
-
-const convertToLE = (hex: string) => {
-  const hexBytes = hex.match(/[\da-f][\da-f]/g);
-  if (!hexBytes) {
-    throw new Error(`${hex} is not a hex string`);
-  }
-  return hexBytes.reverse().join("");
 };
