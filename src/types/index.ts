@@ -1,9 +1,13 @@
 export type Bit = "0" | "1";
-export interface Input {
+
+export interface InputUnsigned {
   txid: string;
   vout: number;
+  sequence: number;
+}
+
+export interface Input extends InputUnsigned {
   scriptSig: string;
-  sequence: string;
 }
 
 export interface Output {
@@ -12,7 +16,7 @@ export interface Output {
 }
 
 export interface Transaction {
-  version: string;
+  version: number;
   inputs: Input[];
   outputs: Output[];
   lockTime: number;

@@ -46,7 +46,7 @@ const decodeInput = (rawTransaction: string, indexStart: number) => {
       txid: txId,
       vout: parseInt(vOut, 16),
       scriptSig,
-      sequence,
+      sequence: parseInt(sequence, 16),
     },
     indexEnd: sequenceIndexEnd,
   };

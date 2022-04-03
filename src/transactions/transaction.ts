@@ -1,16 +1,17 @@
-import { Input, Output } from "@/types";
-import { decodeRawTransaction } from "./decode/decode-transaction";
+import { Input, InputUnsigned, Output } from "@/types";
+import { decodeTransaction, encodeTransaction } from "./decode/transaction-conversion";
+import RpcClient from "bitcoind-rpc";
 
 export class Transaction {
-  constructor(
-    public version: string,
+  private constructor(
+    public version: number,
     public inputs: Input[],
     public outputs: Output[],
     public lockTime: number
   ) {}
 
   static fromRaw(rawTransaction: string) {
-    const transaction = decodeRawTransaction(rawTransaction);
+    const transaction = decodeTransaction(rawTransaction);
     return new Transaction(
       transaction.version,
       transaction.inputs,
