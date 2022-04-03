@@ -7,6 +7,7 @@ import {
   extractY,
   modulo,
   convertToLE,
+  hash256,
 } from "@/utils";
 
 describe("Crypto Utils", () => {
@@ -19,6 +20,14 @@ describe("Crypto Utils", () => {
       "9cbbf17cc7ba64c3cd56b9dddac33d7e6c86ab93"
     );
   });
+
+  it("should retrieve the correct double 256 hash for a given number", () => {
+    // Checked with https://emn178.github.io/online-tools/sha256.html
+    expect(hash256(Buffer.from("hello, world")).toString("hex")).toBe(
+      "422d6c551651aa276f8bef12ea5eca26fa905091d14cdd99d08a39a5c29b88af"
+    );
+  });
+
   it("should convert the buffer to a bigint with the value 16", () => {
     const buffer = Buffer.from("10", "hex");
     expect(bufferToBigInt(buffer)).toBe(16n);
@@ -59,5 +68,5 @@ describe("Crypto Utils", () => {
 
   it("should convert to a LE number", () => {
     expect(convertToLE("01d2f46a")).toBe("6af4d201");
-  })
+  });
 });
